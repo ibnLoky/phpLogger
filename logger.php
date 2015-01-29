@@ -22,7 +22,7 @@ class logger {
         $file = fopen(LOG_FILE, a+) or die("could not open log file");
       }
 
-      public function getInstance()
+      public static function getInstance()
       {
         if (self::$_instance === null) {
             self::$_instance = new self();
