@@ -18,8 +18,8 @@ class logger {
 
       private function __construct()
       {
-        $level = 0;
-        $file = fopen(LOG_FILE, a+) or die("could not open log file");
+        $this->level = 0;
+        $this->file = fopen(LOG_FILE, 'a+') or die("could not open log file");
       }
 
       public static function getInstance()
@@ -35,34 +35,33 @@ class logger {
         self::getInstance()->_log($lvl, $msg);
       }
 
-      private function _log()
+      private function _log($lvl, $msg)
       {
+	$string = "";
         if ($lvl != LOGGER_IN && $lvl != LOGGER_OUT && $lvl != LOGGER_TRACE)
             throw new Exception("Unknown log event");
         if ($lvl == LOGGER_IN) {
-            $level += 1;
+            $this->level += 1;
             $string = "";
-            for ($i = 0; $i != $level; ++$i)
+            for ($i = 0; $i != $this->level; ++$i)
                 $string .= ">>";
             $string .= $msg;
-            fwirte($this->$file, $string);
-        }
+           }
         if ($lvl == LOGGER_OUT) {
-            if ($level == 0)
+            if ($this->level == 0)
                 throw new Exception("Incorrect log event");
             else {
-            for ($i = 0; $i != $level; ++$i)
+            for ($i = 0; $i != $this->level; ++$i)
                 $string .= "<<";
             $string .= $msg;
-            fwirte($this->$file, $string);
-            $level -= 1;
-            }
+   	    }
         }
         else if ($lvl == LOGGER_TRACE) {
-            for ($i = 0; $i != $level; ++$i)
+            for ($i = 0; $i != $this->level; ++$i)
                 $string .= "::";
             $string .= $msg;
-            fwirte($this->$file, $string);
         }
+	$string .= "\n";
+	fwrite($this->file, $string);
       }
   }
